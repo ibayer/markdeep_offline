@@ -1,7 +1,4 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<meta http-equiv="refresh" content="30" />
-
+<!DOCTYPE html><meta charset="utf-8">
 
                             **LaTeX-style Starter Document**
 
@@ -24,20 +21,23 @@ $$ \int_a^b x^3 dx$$
 
 $$\BO(x^2)$$
 
+<!-- DRIVER {{{1 -->
 <!-- Markdeep: -->
 <style
 class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style>
 <script type="text/javascript">window.markdeepOptions = {detectMath:false}</script>
-<script src="markdeep/markdeep.min.js"></script>
+<script src="./markdeep/markdeep.min.js"></script>
 <script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
 
 <!-- KaTeX: -->
-<link rel="stylesheet" href="katex/katex.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="./katex/katex.min.css" crossorigin="anonymous">
 
 <!-- The loading of KaTeX is deferred to speed up page rendering -->
-<script defer src="katex/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="./katex/katex.min.js" crossorigin="anonymous"></script>
 
 <!-- To automatically render math in text elements, include the auto-render extension: -->
-<script defer src="katex/contrib/auto-render.min.js"  crossorigin="anonymous"
+<script defer src="./katex/contrib/auto-render.min.js"  crossorigin="anonymous"
 	onload="renderMathInElement(document.body);"></script>
 	
+<script src="./autoload.js" onload="reload_on_change(1, /^\.\//);"></script>
+<!-- vim:set ft=markdown fdm=marker: -->
