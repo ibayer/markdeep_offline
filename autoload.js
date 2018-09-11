@@ -28,15 +28,14 @@ const string_hash = (str) => {
 	return h;
 }
 
-const all_attrs = (tag, attr) => {
-	return Array.from(document.querySelectorAll(tag)).map((i) => i.getAttribute(attr))
-		.filter((i) => i !== null);
+const query_attrs = (tag, attr) => {
+	return Array.from(document.querySelectorAll(tag))
+		.map((i) => i.getAttribute(attr)).filter((i) => i !== null);
 };
 
-const document_hash = async (filter) => {
-	let res = all_attrs('script', 'src')
-		.concat(all_attrs('link', 'href'))
-		.concat(all_attrs('img', 'src')).filter(filter);
+const document_hash = async () => {
+	let res = query_attrs('script.pollchange, img.pollchange', 'src')
+		.concat(query_attrs('link.pollchange', 'href'));
 	res.push(document.location.href);
 	// console.log('hashing', res);
 	let h = 0;
@@ -44,19 +43,16 @@ const document_hash = async (filter) => {
 	return h;
 };
 
-window.reload_on_change = (seconds, allow) => {
-	if (!allow || !(allow instanceof RegExp)) allow = /.*/;
-	document.addEventListener('DOMContentLoaded', (_evt) => {
-		let current_hash = null;
-		// console.log('register reload', allow);
-		document_hash((i) => allow.test(i)).then((h) => current_hash = h);
-		// periodically check if changed
-		window.setInterval(async () => {
-			const hash = await document_hash((i) => allow.test(i));
-			// console.log('reload', current_hash, hash);
-			if (current_hash !== hash) document.location.reload(true); // true: no cache
-		}, (seconds || 1) * 1000);
-	});
+window.reload_on_change = (seconds) => {
+	let current_hash = null;
+	// console.log('register reload');
+	document_hash().then((h) => current_hash = h);
+	// periodically check if changed
+	window.setInterval(async () => {
+		const hash = await document_hash();
+		// console.log('reload', current_hash, hash);
+		if (current_hash !== hash) document.location.reload(true); // true: no cache
+	}, (seconds || 1) * 1000);
 };
 
 })();

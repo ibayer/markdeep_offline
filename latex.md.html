@@ -1,31 +1,55 @@
-<!DOCTYPE html><meta charset="utf-8">
+<!DOCTYPE html><meta charset="utf-8"><textarea class='md'>
 
-                            **LaTeX-style Starter Document**
+    **markdeep**
 
-Welcome to Markdeep. It's the simple way to write plain text with
-_style_. From https://casual-effects.com/markdeep
+# markdeep
 
-$$
-\gdef \BO {\mathcal{O}}
-\gdef \R {\mathbb{R}}
-$$
+-   [markdeep/latest](http://casual-effects.com/markdeep/latest/)
+-   [markdeep/features](http://casual-effects.com/markdeep/features.md.html)
 
-Section
-===============================================================================
+-   Surround the markdown content with something allowing for uninterpreted
+    data (e.g. a `<textarea>`, btw.: are there other constructs in HTML5 for
+    "data").  We do not want to have the browser parse/evaluate before we
+    arrive!  E.g. just having the following code block should **not** log
+    anything.
 
-Subsection
--------------------------------------------------------------------------------
+    ``` html
+    <script type="text/javascript">console.log('hi');</script>
+    ```
 
-$$\int_a^b x^3 dx$$
+-   Normal markdown would now just render the textarea.  So we call the
+    markdeep API on the **unprocess and unparsed** textContent.  Embedded tags
+    are parsed after markdown processing not before!
 
-$$\BO(x^2)$$
+-   This skips css injection and we have to take care of the styling.
 
-<textarea class="pseudocode">
+!!! warning
+    Take care of loose HTML tags.  Opening one unintentionally might brake
+    parsing results without indication of error.  Escaping the leading arrow
+    (`\<`) is not recognized.  Use the HTML entity `&lt;`.
+
+    Especially, do not accidentally close the `&lt;/textarea>` that keeps the
+    text as-is before processing.
+
+# katex
+
+-   [katex/releases](https://github.com/Khan/KaTeX/releases)
+-   [katex/supported](https://katex.org/docs/supported.html)
+
+$a$ \(b\)
+
+$$c$$ \[d\]
+
+# pseudocode
+
+-   [pseudocode/features](https://github.com/tatetian/pseudocode.js#features)
+
+``` pseudocode
 \begin{algorithm}
 \caption{Quicksort}
 \begin{algorithmic}
 \PROCEDURE{Quicksort}{$A,p,r$}\COMMENT{comment}
-  \IF{$p<r$}
+  \IF{$p < r$}
     \STATE $q\gets$ \CALL{Partition}{$A,p,r$}
     \STATE \CALL{Quicksort}{$A, p, q - 1$}
     \STATE \CALL{Quicksort}{$A, q + 1, r$}
@@ -33,30 +57,11 @@ $$\BO(x^2)$$
 \ENDPROCEDURE
 \end{algorithmic}
 \end{algorithm}
-</textarea>
+```
 
-<!-- DRIVER {{{1 -->
-<!-- Markdeep: -->
-<style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style>
-<script type="text/javascript">window.markdeepOptions = {detectMath:false}</script>
-<script src="./markdeep/markdeep.min.js"></script>
-<script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
+# autoloading
 
-<!-- KaTeX: -->
-<link rel="stylesheet" href="./katex/katex.min.css" crossorigin="anonymous">
+HTML tags (script, link and img) with the `pollchange` class are periodically
+polled and if changed the full pages reloads.
 
-<!-- The loading of KaTeX is deferred to speed up page rendering -->
-<script defer src="./katex/katex.min.js" crossorigin="anonymous"></script>
-
-<!-- To automatically render math in text elements, include the auto-render extension: -->
-<script defer src="./katex/contrib/auto-render.min.js"  crossorigin="anonymous"
-	onload="renderMathInElement(document.body);"></script>
-
-<!-- pseudocode -->
-<link rel="stylesheet" href="./pseudocode/pseudocode.min.css" type="text/css">
-<script defer src="./pseudocode/pseudocode.min.js" type="text/javascript"></script>
-<script defer src="./ps-auto-render.js"></script>
-
-<script defer src="./attribution.js"></script>
-<script defer src="./autoload.js" onload="reload_on_change(1, /^\.\//);"></script>
-<!-- vim:set ft=markdown fdm=marker: -->
+</textarea><script class='pollchange' src='bootstrap.js'></script>
