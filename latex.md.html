@@ -8,9 +8,10 @@
 -   [markdeep/features](http://casual-effects.com/markdeep/features.md.html)
 
 -   Surround the markdown content with something allowing for uninterpreted
-    data (e.g. a `<textarea>`, btw.: are there other constructs in HTML5 for
-    "data").  We do not want to have the browser parse/evaluate before we
-    arrive!  E.g. just having the following code block should **not** log
+    data (e.g. a `<textarea>` or others with the
+    [escapable-raw-text](https://www.w3.org/TR/html5/syntax.html#escapable-raw-text)
+    content model).  We do not want to have the browser parse/evaluate before
+    we arrive!  E.g.  just having the following code block should **not** log
     anything.
 
     ``` html
