@@ -62,7 +62,7 @@ $$c$$ \[d\]
 
 # autoloading
 
-HTML tags (script, link and img) with the `pollchange` class are periodically
-polled and if changed the full pages reloads.
+Only the main `.md.html` is polled for changes.  The reload happens
+dynamically without a full page reload.
 
-</textarea><script class='pollchange' src='bootstrap.js'></script>
+</textarea><script src='bootstrap.js'></script>

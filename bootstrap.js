@@ -1,3 +1,5 @@
+(() => {
+
 const jsscript = (src) => document.write(`<script class='pollchange' src='${src}'></script>`);
 const linkcss = (src) => document.write(`<link class='pollchange' rel='stylesheet' href='${src}'>`);
 
@@ -19,22 +21,26 @@ linkcss('pseudocode/pseudocode.min.css');
 jsscript('pseudocode/pseudocode.min.js');
 
 // autoload
+jsscript('request.js');
 jsscript('autoload.js');
 
 // default styles
-linkcss('body.css');
-linkcss('markdown.css');
-linkcss('header.css');
-linkcss('highlight.css');
+linkcss('markdeep/body.css');
+linkcss('markdeep/header.css');
+linkcss('markdeep/markdown.css');
+linkcss('markdeep/highlight.css');
 
-document.addEventListener('DOMContentLoaded', (_evt) => {
-	let m = document.querySelector('textarea.md');
-	m.outerHTML = markdeep.format(m.textContent, false);
-	m = document.querySelector('span.md'); // refresh, since outer changed
-	renderMathInElement(m);
+const process = (node) => {
+	// root
+	const div = document.createElement('div');
+	div.innerHTML = markdeep.format(node.textContent, false);
+	node.parentNode.insertBefore(div, node);
+	node.parentNode.removeChild(node);
+	// post processing
+	renderMathInElement(div);
 	// Find pseudocode blocks, sadly the language tag is not passed on.  Walk
 	// all listings and have a look at the first line.
-	for (let algo of m.querySelectorAll('pre.listing')) {
+	for (let algo of div.querySelectorAll('pre.listing')) {
 		const pc = algo.textContent;
 		if (!pc.startsWith('\\begin{algorithm}')) continue;
 		// replace the original with a `div`
@@ -42,5 +48,24 @@ document.addEventListener('DOMContentLoaded', (_evt) => {
 		pseudocode.render(algo.textContent, div, psopt);
 		algo.outerHTML = div.outerHTML;
 	}
-	reload_on_change(1);
+	return div;
+};
+
+let root;
+const reload = () => {
+	request({
+		url: document.location.href,
+		type: 'document',
+		mime: 'text/html'
+	})
+		.then((doc) => {
+			root.innerHTML = process(doc.querySelector('.md')).innerHTML;
+		}, (err) => consolo.log('err', err));
+};
+
+document.addEventListener('DOMContentLoaded', (_evt) => {
+	on_source_change(1, reload);
+	root = process(document.querySelector('.md'));
 });
+
+})();
