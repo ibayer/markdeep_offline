@@ -1,7 +1,17 @@
 (() => {
 
-const jsscript = (src) => document.write(`<script class='pollchange' src='${src}'></script>`);
-const linkcss = (src) => document.write(`<link class='pollchange' rel='stylesheet' href='${src}'>`);
+// setup location independent imports
+const boot = document.querySelectorAll('script[src$="bootstrap.js"]');
+if (boot.length !== 1) {
+	console.log('seeing multiple bootstrap.js, which one to use as path?');
+	document.body.style.backgroundColor ='red';
+	return false;
+}
+const path = boot[0].src.replace(/\/[^\/]*$/, ''); // dirname
+console.log(path);
+const jsscript = (src, onload) => document.write(`<script src='${path}/${src}'></script>`);
+const linkcss = (src) => document.write(`<link rel='stylesheet' href='${path}/${src}'>`);
+
 
 // markdeep
 if (!window.markdeepOptions) markdeepOptions = {}; // honor previous setting
@@ -37,7 +47,10 @@ const process = (node) => {
 	node.parentNode.insertBefore(div, node);
 	node.parentNode.removeChild(node);
 	// post processing
-	renderMathInElement(div);
+	renderMathInElement(div, {
+		throwOnError: true, // false: do not log but render
+		errorColor: '#ff0000'
+	});
 	// Find pseudocode blocks, sadly the language tag is not passed on.  Walk
 	// all listings and have a look at the first line.
 	for (let algo of div.querySelectorAll('pre.listing')) {
